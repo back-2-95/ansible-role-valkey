@@ -2,3 +2,5 @@ bind 127.0.0.1 {{ docker_gateway_ip | mandatory }}
 port {{ valkey_port | mandatory }}
 
 protected-mode {{ valkey_protected_mode | mandatory }}
+
+maxmemory-policy {{ valkey_maxmemory_policy }}

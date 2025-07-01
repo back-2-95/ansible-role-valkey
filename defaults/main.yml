@@ -12,4 +12,6 @@ valkey_port: 6379
 # Options: yes|no
 valkey_protected_mode: "no"
 
+valkey_maxmemory_policy: "noeviction"
+
 valkey_package_debian: valkey
