@@ -1,0 +1,46 @@
+---
+- name: Run docker network inspect
+  command: docker network inspect bridge
+  register: docker_inspect_output
+  changed_when: false
+
+- name: Docker bridge network gateway IP
+  set_fact:
+    docker_gateway_ip: "{{ (docker_inspect_output.stdout | from_json)[0].IPAM.Config[0].Gateway }}"
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Ensure MySQL Python libraries are installed.
+  ansible.builtin.apt:
+    name: "{{ valkey_package_debian }}"
+    state: present
+
+- name: Verify Valkey include directory exists.
+  ansible.builtin.file:
+    path: "{{ valkey_conf_include_dir }}"
+    state: directory
+    owner: "{{ valkey_user }}"
+    group: "{{ valkey_group }}"
+    mode: 0755
+
+- name: Update Valkey configuration to include overrides.
+  ansible.builtin.lineinfile:
+    dest: "{{ valkey_conf_dir }}/valkey.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: 'valkey-cli CONFIG GET include'
+  with_items:
+    - regexp: "^include"
+      line: "include {{ valkey_conf_include_dir }}/*.conf"
+
+- name: Copy my.cnf override files into include directory.
+  ansible.builtin.template:
+    src: overrides.conf.j2
+    dest: "{{ valkey_conf_include_dir }}/overrides.conf"
+    owner: "{{ valkey_user }}"
+    group: "{{ valkey_group }}"
+    mode: 0644
+  notify: restart valkey
