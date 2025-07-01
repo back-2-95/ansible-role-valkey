@@ -3,6 +3,7 @@
   command: docker network inspect bridge
   register: docker_inspect_output
   changed_when: false
+  failed_when: docker_inspect_output.rc != 0 and 'No such network' not in docker_inspect_output.stderr
 
 - name: Docker bridge network gateway IP
   set_fact:
@@ -31,7 +32,6 @@
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
     state: present
-    validate: 'valkey-cli CONFIG GET include'
   with_items:
     - regexp: "^include"
       line: "include {{ valkey_conf_include_dir }}/*.conf"

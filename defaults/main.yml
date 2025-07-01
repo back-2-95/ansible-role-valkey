@@ -10,6 +10,6 @@ valkey_conf_include_dir: "{{ valkey_conf_dir }}/conf.d"
 valkey_port: 6379
 
 # Options: yes|no
-valkey_protected_mode: no
+valkey_protected_mode: "no"
 
 valkey_package_debian: valkey
