@@ -13,7 +13,7 @@
   ansible.builtin.apt:
     update_cache: true
 
-- name: Ensure MySQL Python libraries are installed.
+- name: Ensure Valkey is installed.
   ansible.builtin.apt:
     name: "{{ valkey_package_debian }}"
     state: present
@@ -44,3 +44,9 @@
     group: "{{ valkey_group }}"
     mode: 0644
   notify: restart valkey
+
+- name: Ensure Valkey service is enabled and started
+  ansible.builtin.service:
+    name: "{{ valkey_daemon }}"
+    enabled: true
+    state: started
