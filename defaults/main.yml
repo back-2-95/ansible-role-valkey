@@ -7,6 +7,8 @@ valkey_daemon: valkey
 valkey_conf_dir: /etc/valkey
 valkey_conf_include_dir: "{{ valkey_conf_dir }}/conf.d"
 
+# Comma separated list of IP addresses, e.g. Tailscale or Twingate
+valkey_additional_bind_ip: ""
 valkey_port: 6379
 
 # Options: yes|no

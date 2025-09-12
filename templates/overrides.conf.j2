@@ -1,4 +1,4 @@
-bind 127.0.0.1 {{ docker_gateway_ip | mandatory }}
+bind 127.0.0.1 {{ docker_gateway_ip | mandatory }} {{ valkey_additional_bind_ip | default('') }}
 port {{ valkey_port | mandatory }}
 
 protected-mode {{ valkey_protected_mode | mandatory }}
