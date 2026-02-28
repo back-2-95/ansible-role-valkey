@@ -45,6 +45,25 @@
     mode: 0644
   notify: restart valkey
 
+- name: Ensure systemd override directory exists.
+  ansible.builtin.file:
+    path: /etc/systemd/system/valkey-server.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Deploy systemd drop-in to start Valkey after Docker and Tailscale.
+  ansible.builtin.template:
+    src: systemd-override.conf.j2
+    dest: /etc/systemd/system/valkey-server.service.d/override.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+    - restart valkey
+
 - name: Ensure Valkey service is enabled and started
   ansible.builtin.service:
     name: "{{ valkey_daemon }}"
