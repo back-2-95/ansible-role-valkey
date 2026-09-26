@@ -3,6 +3,7 @@
   command: docker network inspect bridge
   register: docker_inspect_output
   changed_when: false
+  check_mode: false
   failed_when: docker_inspect_output.rc != 0 and 'No such network' not in docker_inspect_output.stderr
 
 - name: Docker bridge network gateway IP
